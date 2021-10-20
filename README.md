@@ -16,7 +16,7 @@ Pour lancer une commande : il faut d'abord dire "Alexa" puis donner une des comm
 
 - [X] Lancer un programme : "lance/ouvre [nom_du_programme]"
 - [X] Faire une recherche sur internet : "recherche [texte_a_rechercher]"
-- [X] Démarrer une vidéo sur YouTube : "joue [titre_de_la_video]"
+- [X] Démarrer une vidéo sur YouTube : "joue [titre_de_la_video]"  
 Optionnel :
 - [X] Donner l'heure : n'importe quelle phrase qui contient le mot "heure"
 - [X] Faire une recherche sur wikipédia et avoir la réponse à l'oral : "qui est [nom_de_la_personne_recherchee]"
