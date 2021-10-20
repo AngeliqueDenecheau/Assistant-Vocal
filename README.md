@@ -6,19 +6,17 @@ Projet réalisé lors de la deuxième année de master à l'Université d'Angers
 ### Tâches
 - [X] Rechercher les différentes librairies et les différents services pouvant être utilisés dans ce projet
 - [ ] Créer la fonction qui permet de récupérer ce que dit l'utilisateur
-- [ ] Implémenter les commandes ci-dessous
-- [ ] Ajouter la fonction qui permet de faire parler Alexa
-- [ ] 
+- [X] Implémenter les commandes ci-dessous
+- [X] Ajouter la fonction qui permet de faire parler Alexa
 - [ ] Tester
 - [ ] Gestion des erreurs
 
+### Liste des commandes
 Pour lancer une commande : il faut d'abord dire "Alexa" puis donner une des commande ci-dessous.
 
-### Liste des commandes
 - [X] Lancer un programme : "lance/ouvre [nom_du_programme]"
 - [X] Faire une recherche sur internet : "recherche [texte_a_rechercher]"
 - [X] Démarrer une vidéo sur YouTube : "joue [titre_de_la_video]"
-- 
 Optionnel :
 - [X] Donner l'heure : n'importe quelle phrase qui contient le mot "heure"
 - [X] Faire une recherche sur wikipédia et avoir la réponse à l'oral : "qui est [nom_de_la_personne_recherchee]"
