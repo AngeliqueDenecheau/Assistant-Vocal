@@ -102,7 +102,12 @@ def run_alexa():
         exit()
 
     elif 'fact' in command: #donne un fact
+        print('commande fact')
         talk(axolot_fact())
+
+    elif 'citation' in command: #dit une citation
+        print('commande citation')
+        talk(anime_quote())
 
     else:
         print('commande introuvable')
