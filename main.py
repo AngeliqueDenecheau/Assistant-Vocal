@@ -2,7 +2,6 @@
 # Problème libespeak : sudo apt-get install espeak
 
 import speech_recognition as sr
-import pyttsx3
 import pywhatkit
 import datetime
 import wikipedia
@@ -11,19 +10,27 @@ import webbrowser
 import sys
 import subprocess
 
-listener = sr.Recognizer()
-engine = pyttsx3.init()
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
-#engine.setProperty('voice', "french")
-engine.runAndWait()
+from gtts import gTTS
+from io import BytesIO
+import pygame
+from pydub import AudioSegment
 
+
+listener = sr.Recognizer()
 default_navigator = 'firefox'
 
 
 def talk(text):
-    engine.say(text)
-    engine.runAndWait()
+    mp3_fp = BytesIO()
+    wav_fp = BytesIO()
+    tts = gTTS(text, lang="fr", slow=False)
+    tts.write_to_fp(mp3_fp)
+    mp3_fp.seek(0)
+    sound = AudioSegment.from_file(mp3_fp)
+    wav_fp = sound.export(mp3_fp, format="wav")
+    pygame.mixer.init()
+    pygame.mixer.music.load(wav_fp)
+    pygame.mixer.music.play()
 
 
 def take_command():
@@ -32,7 +39,6 @@ def take_command():
             print("listening...")
             voice = listener.listen(source)
             command = listener.recognize_google(voice, None, "fr-FR")
-            #command = listener.recognize_sphinx(voice, "fr-FR")
             command = command.lower()
             print(command)
             if 'jacqueline' in command:
@@ -57,7 +63,7 @@ def run_alexa():
         print('commande heure')
         time = datetime.datetime.now().strftime('%H:%M')
         talk('il est actuellement ' + time)
-    elif 'qui est' in command:
+    elif 'qui est' in command:  # Obtenir à l'oral le résumé Wikipédia d'une personne
         print('commande qui est')
         person = command.replace('qui est ', '')
         info = wikipedia.summary(person, 1)
