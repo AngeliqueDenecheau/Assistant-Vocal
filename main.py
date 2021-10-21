@@ -17,6 +17,7 @@ from pydub import AudioSegment
 
 
 listener = sr.Recognizer()
+wikipedia.set_lang("fr")
 default_navigator = 'firefox'
 
 
@@ -94,6 +95,9 @@ def run_alexa():
                 return
 
         internet_research(command, navigator)
+    elif 'dormir' in command:  # Stop Jacqueline
+        talk("Bonne nuit")
+        exit()
     else:
         print('commande introuvable')
         talk('je n\'ai pas compris')

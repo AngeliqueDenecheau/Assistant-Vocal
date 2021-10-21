@@ -8,11 +8,11 @@ Projet réalisé lors de la deuxième année de master à l'Université d'Angers
 - [ ] Créer la fonction qui permet de récupérer ce que dit l'utilisateur
 - [X] Implémenter les commandes ci-dessous
 - [X] Ajouter la fonction qui permet de faire parler Alexa
-- [ ] Tester
 - [ ] Gestion des erreurs
+- [ ] Tester
 
 ### Liste des commandes
-Pour lancer une commande : il faut d'abord dire "Alexa" puis donner une des commande ci-dessous.
+Pour lancer une commande : il faut d'abord dire "Jacqueline" puis donner une des commande ci-dessous.
 
 - [X] Lancer un programme : "lance/ouvre [nom_du_programme]"
 - [X] Faire une recherche sur internet : "recherche [texte_a_rechercher]"
