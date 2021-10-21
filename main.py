@@ -15,6 +15,8 @@ from io import BytesIO
 import pygame
 from pydub import AudioSegment
 
+from api_calls import *
+
 
 listener = sr.Recognizer()
 wikipedia.set_lang("fr")
@@ -98,6 +100,10 @@ def run_alexa():
     elif 'dormir' in command:  # Stop Jacqueline
         talk("Bonne nuit")
         exit()
+
+    elif 'fact' in command: #donne un fact
+        talk(axolot_fact())
+
     else:
         print('commande introuvable')
         talk('je n\'ai pas compris')
