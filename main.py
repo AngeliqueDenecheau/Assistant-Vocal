@@ -17,16 +17,27 @@ from pydub import AudioSegment
 
 from api_calls import *
 
+from deep_translator import GoogleTranslator
 
 listener = sr.Recognizer()
 wikipedia.set_lang("fr")
 default_navigator = 'firefox'
 
 
-def talk(text):
+def talk(text, langueDest = "fr"):
+    '''
+    Make Jacqueline talk (in French)
+
+    :param text: The text to say
+    :param langueDest: The langage Jacqueline talks in
+    '''
+
+    # Sources might be other than English, so we let google translate decide
+    text = GoogleTranslator(source="auto", target=langueDest).translate(text)
+
     mp3_fp = BytesIO()
     wav_fp = BytesIO()
-    tts = gTTS(text, lang="fr", slow=False)
+    tts = gTTS(text, lang=langueDest, slow=False)
     tts.write_to_fp(mp3_fp)
     mp3_fp.seek(0)
     sound = AudioSegment.from_file(mp3_fp)
@@ -37,6 +48,12 @@ def talk(text):
 
 
 def take_command():
+    '''
+    Wait for the user to talk and tokenize his sentence
+
+    :return: The user's command
+    '''
+
     try:
         with sr.Microphone() as source:
             print("listening...")
@@ -52,33 +69,45 @@ def take_command():
         pass
 
 
-def run_alexa():
+def run_jacqueline():
+    '''
+    Main function of Jacqueline, use keywords to perform an action
+
+    :return: Nothing
+    '''
+
+    # No command
     command = take_command()
     if command == None:
         return
 
+    # Plays a video on youtube
     if 'joue ' in command:
         print('commande jouer')
         song = command.replace('joue ', '')
         talk(song + ' en cours de lecture')
         pywhatkit.playonyt(song)
 
+    # Tells the time
     elif 'heure' in command:
         print('commande heure')
         time = datetime.datetime.now().strftime('%H:%M')
         talk('il est actuellement ' + time)
 
-    elif 'qui est' in command:  # Obtenir à l'oral le résumé Wikipédia d'une personne
+    # Looks up somebody on wikipedia
+    elif 'qui est' in command:
         print('commande qui est')
         person = command.replace('qui est ', '')
         info = wikipedia.summary(person, 1)
         talk(info)
 
+    # Tells a joke
     elif 'blague' in command:
         print('commande blague')
-        talk(GoogleTranslator(source=langueSource, target=langueDest).translate(pyjokes.get_joke()))
+        talk(pyjokes.get_joke())
 
-    elif 'ouvre' in command or 'lance' in command:  # Ouvrir un logiciel
+    # Launch an app
+    elif 'ouvre' in command or 'lance' in command:
         print('commande ouvre/lance')
         software = command.replace('ouvre ', '')
         software = command.replace('lance ', '')
@@ -88,7 +117,8 @@ def run_alexa():
         except FileNotFoundError:
             talk(software + ' n\'est pas installé sur cet ordinateur')
 
-    elif 'recherche' in command:  # Faire une recherche dans un navigateur
+    # Make a Google search
+    elif 'recherche' in command:
         print('commande recherche')
         command = command.replace('recherche ', '')
 
@@ -102,11 +132,14 @@ def run_alexa():
                 return
 
         internet_research(command, navigator)
+
+    # Shutdown Jacqueline
     elif 'dormir' in command:  # Stop Jacqueline
         talk("Bonne nuit")
         exit()
 
-    elif 'fact' in command: #donne un fact
+    # Tells a fact
+    elif 'fact' in command:
         print('commande fact')
         if 'axolot' in command:
             talk(axolot_fact())
@@ -116,17 +149,26 @@ def run_alexa():
             print('commande chuck norris fact')
             talk(chuck_fact())
 
-    elif 'citation' in command or 'cite' in command: #dit une citation
+    # Tells a quote
+    elif 'citation' in command or 'cite' in command:
         if 'animé' in command:
             print('commande citation')
             talk(anime_quote())
 
+    # Doesn't understand
     else:
         print('commande introuvable')
         talk('je n\'ai pas compris')
 
 
 def get_navigator(command):
+    '''
+    Function used to get the specified navigator to search in
+
+    :param command: The user's command
+    :return: The navigator specified by the user
+    '''
+
     if 'firefox' in command:
         return 'firefox'
     elif 'chrome' in command:
@@ -139,6 +181,13 @@ def get_navigator(command):
 
 
 def internet_research(text, navigator):
+    '''
+    Make a reasearch on the internet
+
+    :param text: What to search
+    :param navigator: The navigator to use
+    '''
+
     url = 'https://google.com/search?q=' + text
     try:
         webbrowser.get(navigator).open(url)
@@ -159,6 +208,6 @@ def internet_research(text, navigator):
         talk('Votre système d\'exploitation n\'est pas reconnu')
     """
 
-
+# Jacqueline loop
 while True:
-    run_alexa()
+    run_jacqueline()
