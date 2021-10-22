@@ -116,7 +116,7 @@ def run_alexa():
             print('commande chuck norris fact')
             talk(chuck_fact())
 
-    elif 'citation' in command: #dit une citation
+    elif 'citation' in command or 'cite' in command: #dit une citation
         if 'animé' in command:
             print('commande citation')
             talk(anime_quote())
