@@ -57,23 +57,27 @@ def run_alexa():
     if command == None:
         return
 
-    if 'joue' in command:
+    if 'joue ' in command:
         print('commande jouer')
         song = command.replace('joue ', '')
         talk(song + ' en cours de lecture')
         pywhatkit.playonyt(song)
+
     elif 'heure' in command:
         print('commande heure')
         time = datetime.datetime.now().strftime('%H:%M')
         talk('il est actuellement ' + time)
+
     elif 'qui est' in command:  # Obtenir à l'oral le résumé Wikipédia d'une personne
         print('commande qui est')
         person = command.replace('qui est ', '')
         info = wikipedia.summary(person, 1)
         talk(info)
+
     elif 'blague' in command:
         print('commande blague')
-        talk(pyjokes.get_joke())
+        talk(GoogleTranslator(source=langueSource, target=langueDest).translate(pyjokes.get_joke()))
+
     elif 'ouvre' in command or 'lance' in command:  # Ouvrir un logiciel
         print('commande ouvre/lance')
         software = command.replace('ouvre ', '')
@@ -83,6 +87,7 @@ def run_alexa():
             talk('Ouverture de ' + software)
         except FileNotFoundError:
             talk(software + ' n\'est pas installé sur cet ordinateur')
+
     elif 'recherche' in command:  # Faire une recherche dans un navigateur
         print('commande recherche')
         command = command.replace('recherche ', '')
@@ -103,11 +108,18 @@ def run_alexa():
 
     elif 'fact' in command: #donne un fact
         print('commande fact')
-        talk(axolot_fact())
+        if 'axolot' in command:
+            talk(axolot_fact())
+        elif 'animé' in command:
+            talk(anime_fact(""))
+        elif 'chuck' in command:  # donne un fact
+            print('commande chuck norris fact')
+            talk(chuck_fact())
 
     elif 'citation' in command: #dit une citation
-        print('commande citation')
-        talk(anime_quote())
+        if 'animé' in command:
+            print('commande citation')
+            talk(anime_quote())
 
     else:
         print('commande introuvable')
