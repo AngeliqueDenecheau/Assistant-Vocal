@@ -40,3 +40,28 @@ def chuck_fact():
     '''
     response = rq.get("https://api.chucknorris.io/jokes/random")
     return "Chuck norris fact: " + response.json()["value"]
+
+def jours_feries():
+    '''
+        Make an API call to get all the special holliday day in France for 2021
+
+        :return: A list of the special holliday day in France
+    '''
+    response = rq.get("https://calendrier.api.gouv.fr/jours-feries/metropole/2021.json")
+    jours_feries = "";
+    for a in response.json():
+        jours_feries = jours_feries + " et le " + a + " " + response.json()[a];
+    return "Les prochains jours fériés sont " + jours_feries
+
+
+def documentation_fiscal_entities_france():
+    '''
+        Make an API call to get information about different fiscal entities in france
+
+        :return: A Chuck Norris fact in English
+    '''
+    response = rq.get("https://fr.openfisca.org/api/latest/entities")
+    collect_documentation = "";
+    for a in response.json():
+        collect_documentation = collect_documentation + " " + response.json()[a]["documentation"];
+    return "Voilà des informations sur les différentes entités fiscales en France " + collect_documentation

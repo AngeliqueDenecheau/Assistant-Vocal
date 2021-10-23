@@ -66,6 +66,7 @@ def take_command():
                 print(command)
                 return command
     except:
+        print("err")
         pass
 
 
@@ -87,6 +88,14 @@ def run_jacqueline():
         song = command.replace('joue ', '')
         talk(song + ' en cours de lecture')
         pywhatkit.playonyt(song)
+
+    if 'ferié ' in command:
+        talk(jours_feries())
+        print('commande jour ferié')
+
+    if 'fiscal' or 'entité' in command:
+        talk(documentation_fiscal_entities_france())
+        print("L'api va donner un cours de SES")
 
     # Tells the time
     elif 'heure' in command:
