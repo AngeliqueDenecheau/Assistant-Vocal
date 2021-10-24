@@ -9,6 +9,7 @@ import pyjokes
 import webbrowser
 import sys
 import subprocess
+import random
 
 from gtts import gTTS
 from io import BytesIO
@@ -82,26 +83,28 @@ def run_jacqueline():
     if command == None:
         return
 
+    # Gives fiscal information
+    elif 'fiscal' in command or 'entité' in command:
+        talk(documentation_fiscal_entities_france())
+        print("L'api va donner un cours de SES")
+
     # Plays a video on youtube
-    if 'joue ' in command:
+    elif 'joue ' in command:
         print('commande jouer')
         song = command.replace('joue ', '')
         talk(song + ' en cours de lecture')
         pywhatkit.playonyt(song)
-
-    if 'ferié ' in command:
-        talk(jours_feries())
-        print('commande jour ferié')
-
-    if 'fiscal' or 'entité' in command:
-        talk(documentation_fiscal_entities_france())
-        print("L'api va donner un cours de SES")
 
     # Tells the time
     elif 'heure' in command:
         print('commande heure')
         time = datetime.datetime.now().strftime('%H:%M')
         talk('il est actuellement ' + time)
+
+    # Gives French holiday
+    elif 'ferié ' in command:
+        talk(jours_feries())
+        print('commande jour ferié')
 
     # Looks up somebody on wikipedia
     elif 'qui est' in command:
@@ -149,18 +152,25 @@ def run_jacqueline():
 
     # Tells a fact
     elif 'fact' in command:
+        command = command.replace('fact ', '')
         print('commande fact')
         if 'axolot' in command:
             talk(axolot_fact())
-        elif 'animé' in command:
-            talk(anime_fact(""))
+        elif 'animé' in command: # Issue -> What if the user gives a name
+            talk(anime_fact())
         elif 'chuck' in command:  # donne un fact
             print('commande chuck norris fact')
             talk(chuck_fact())
+        else:
+            print("random fact")
+            talk(random.choice([axolot_fact(), chuck_fact()]))
 
     # Tells a quote
-    elif 'citation' in command or 'cite' in command:
+    elif 'citation' in command or 'cite' in command: # Issue -> What if the user gives a name
+        command = command.replace('citation ', '')
+        command = command.replace('cite ', '')
         if 'animé' in command:
+            command = command.replace('animé ', '')
             print('commande citation')
             talk(anime_quote())
 

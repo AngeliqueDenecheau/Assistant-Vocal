@@ -1,52 +1,64 @@
 #conda install Requests
 import requests as rq
 
-def anime_quote():
-    '''
+# -- QUOTES
+
+def anime_quote(command=""):
+    """
     Make an API call to get an anime quote
 
+    :param command: The remainder of the command
     :return: An anime quote in English
-    '''
+    """
 
     response = rq.get("https://animechan.vercel.app/api/random")
     return response.json()["character"]+" says: "+response.json()["quote"]
 
-def anime_fact(anime):
-    '''
+# -- FACTS
+
+def anime_fact(command=""):
+    """
     Make an API call to get an anime fact
 
-    :param anime: The anime from which we want a fact
+    :param command: The remainder of the command
     :return: An anime fact in English
-    '''
+    """
 
     response = rq.get("https://anime-facts-rest-api.herokuapp.com/api/v1/")
     return "Anime fact: " + response.json()
 
 def axolot_fact():
-    '''
-        Make an API call to get an axolotl fact
+    """
+    Make an API call to get an axolotl fact
 
-        :return: An axolotl fact in English
-    '''
-
+    :return: An axolotl fact in English
+    """
     response = rq.get("https://axoltlapi.herokuapp.com/")
-    return "Axolot fact: " + response.json()["facts"]
+
+    if (response.status_code == 200):
+        return "Axolot fact: " + response.json()["facts"]
+    else:
+        return "Je n'ai pas de fact sur les axolotls aujourd'hui, je m'excuse pour le désagrément"
 
 def chuck_fact():
-    '''
-        Make an API call to get a Chuck Norris fact
+    """
+    Make an API call to get a Chuck Norris fact
 
-        :return: A Chuck Norris fact in English
-    '''
+    :return: A Chuck Norris fact in English
+    """
     response = rq.get("https://api.chucknorris.io/jokes/random")
     return "Chuck norris fact: " + response.json()["value"]
 
-def jours_feries():
-    '''
-        Make an API call to get all the special holliday day in France for 2021
 
-        :return: A list of the special holliday day in France
-    '''
+# -- Miscellaneous legislative
+
+def jours_feries(command=""):
+    """
+    Make an API call to get all the special holiday day in France for 2021
+
+    :param command: The remainder of the command
+    :return: A list of the special holiday day in France
+    """
     response = rq.get("https://calendrier.api.gouv.fr/jours-feries/metropole/2021.json")
     jours_feries = "";
     for a in response.json():
@@ -54,12 +66,13 @@ def jours_feries():
     return "Les prochains jours fériés sont " + jours_feries
 
 
-def documentation_fiscal_entities_france():
-    '''
-        Make an API call to get information about different fiscal entities in france
+def documentation_fiscal_entities_france(command=""):
+    """
+    Make an API call to get information about different fiscal entities in france
 
-        :return: A Chuck Norris fact in English
-    '''
+    :param command: The remainder of the command
+    :return: Information regarding fiscal entities
+    """
     response = rq.get("https://fr.openfisca.org/api/latest/entities")
     collect_documentation = "";
     for a in response.json():
