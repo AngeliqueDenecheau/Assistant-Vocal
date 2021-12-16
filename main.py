@@ -20,6 +20,21 @@ from api_calls import *
 
 from deep_translator import GoogleTranslator
 
+from nltk.corpus import wordnet as wn
+from nltk.tokenize import TreebankWordTokenizer
+from nltk.wsd import lesk
+from nltk import pos_tag, word_tokenize
+from nltk.tag import StanfordPOSTagger
+import os
+
+### A point enviser
+jar = "/home/etud/Documents/projet/stanford-postagger-4.2.0.jar"
+model = "/home/etud/Documents/projet/french-ud.tagger"
+java_path = "/usr/bin/java"
+
+os.environ['JAVAHOME'] = java_path
+####
+
 listener = sr.Recognizer()
 wikipedia.set_lang("fr")
 default_navigator = 'firefox'
@@ -54,6 +69,10 @@ def take_command():
 
     :return: The user's command
     '''
+
+    # pos_tagger = StanfordPOSTagger(model, jar, encoding='utf8' )
+    # res = pos_tagger.tag(command.split())
+    # print (res)
 
     try:
         with sr.Microphone() as source:
