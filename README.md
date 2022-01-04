@@ -5,9 +5,11 @@ Projet réalisé lors de la deuxième année de master à l'Université d'Angers
 
 ### Tâches
 - [X] Rechercher les différentes librairies et les différents services pouvant être utilisés dans ce projet
-- [ ] Créer la fonction qui permet de récupérer ce que dit l'utilisateur
+- [X] Créer la fonction qui permet de récupérer ce que dit l'utilisateur
 - [X] Implémenter les commandes ci-dessous
 - [X] Ajouter la fonction qui permet de faire parler Alexa
+- [X] Ajouter les API
+- [ ] Mettre en place NLTK
 - [ ] Gestion des erreurs
 - [ ] Tester
 
@@ -21,3 +23,8 @@ Optionnel :
 - [X] Donner l'heure : n'importe quelle phrase qui contient le mot "heure"
 - [X] Faire une recherche sur wikipédia et avoir la réponse à l'oral : "qui est [nom_de_la_personne_recherchee]"
 - [X] Raconter une blague : n'importe quelle phrase qui contient le mot "blague"
+- [X] Donner un fait sur les axolots/animés/Chuck Norris : n'importe quelle phrase qui contient le mot "fait" + le sujet sur lequel on veut une information
+- [X] Donner une citation d'un animé : n'importe quelle phrase qui contient le mot "citation" ou "cite" ainsi que le mot "animé"
+- [X] Avoir la liste des jours fériés en France : n'importe quelle phrase qui contient le mot "férié"
+- [X] Avoir des informations sur les différentes entités fiscales en France : n'importe quelle phrase qui contient le mot "entité" ou "fiscal"
+- [X] Arrêter Jacqueline : n'importe quelle phrase qui contient le mot "dormir"
