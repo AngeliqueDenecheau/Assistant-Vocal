@@ -25,11 +25,12 @@ from nltk.tokenize import TreebankWordTokenizer
 from nltk.wsd import lesk
 from nltk import pos_tag, word_tokenize
 from nltk.tag import StanfordPOSTagger
+from nltk.chunk.regexp import *
 import os
 
 ### A point enviser
-jar = "/home/etud/Documents/projet/stanford-postagger-4.2.0.jar"
-model = "/home/etud/Documents/projet/french-ud.tagger"
+jar = "/home/etud/Documents/projet/Assistant-Vocal/stanford-postagger-4.2.0.jar"
+model = "/home/etud/Documents/projet/Assistant-Vocal/french-ud.tagger"
 java_path = "/usr/bin/java"
 
 os.environ['JAVAHOME'] = java_path
@@ -39,6 +40,69 @@ listener = sr.Recognizer()
 wikipedia.set_lang("fr")
 default_navigator = 'firefox'
 
+def langageProcessing(sentence):
+    '''
+    Process a query by tokenizing it, tagging it, and applying a grammar on it, then remove useless words to keep keywords.
+
+    The sentence is tagged as subsentences (Noun group, verbal group ..) with each word labelized (Noun, adjective, verb ...)
+    which allow us to remove unimportant words (determiners for a google search for instance)
+
+    :param sentence: The sentence to process
+    :return: Keywords
+    '''
+
+    pos_tagger = StanfordPOSTagger(model, jar, encoding='utf8' )
+    res = pos_tagger.tag(sentence.split())
+
+    grammar = "NP: {<DET>?<ADJ>?<NOUN><ADJ>?|<DET>?<ADJ>?<PROPN><ADJ?>|<ADJ>|<NOUN>|<PROPN>|<ADP>|<DET>|<NUM>} \n PP: {<NP>*} \n VP : {<PRON>?<VERB><PRON>?|<PRON>?<AUX><PRON>?}"
+    parser = RegexpParser(grammar)
+    parsed = parser.parse(res)
+
+    # Keep NOUN / VERB / PROPN / ADJ / NUM /
+    cut = ""
+    tags = ("NOUN", "PROPN", "ADJ", "NUM", "VERB")
+
+    cut = removeTag(parsed, tags)
+
+    return cut
+
+def removeTag(sentence, tags):
+    '''
+    Removes tags from pos_tagged sentence to get a clean list of words choosen with the "tags" param
+
+    :param sentence: The sentence to clean
+    :param tags: The tags to keep
+    :return: A list of words
+    '''
+
+    cut = ""
+
+    if len(sentence) > 1:
+        if isinstance(sentence, tuple):
+            if sentence[1] in tags:
+                cut += sentence[0] + " "
+        else:
+            for i in range(len(sentence)):
+                cut += removeTag(sentence[i], tags)
+    else:
+        cut += removeTag(sentence[0], tags)
+
+    return cut
+
+def getSynonyms(word):
+    '''
+    Get synonyms of a word
+
+    :param word: The word to get a synonym of
+    :return: The synonyms
+    '''
+    lang = 'fra'
+
+    sent = TreebankWordTokenizer().tokenize(word)
+    synsets = [lesk(sent, w, 'n') for w in sent]
+
+    for ws in sent:
+        return [n for synset in wn.synsets(ws, lang=lang) for n in synset.lemma_names(lang)]
 
 def talk(text, langueDest = "fr"):
     '''
@@ -70,10 +134,6 @@ def take_command():
     :return: The user's command
     '''
 
-    # pos_tagger = StanfordPOSTagger(model, jar, encoding='utf8' )
-    # res = pos_tagger.tag(command.split())
-    # print (res)
-
     try:
         with sr.Microphone() as source:
             print("listening...")
@@ -102,10 +162,13 @@ def run_jacqueline():
     if command == None:
         return
 
+    #action, complement = langageProcessing(command)
+
     # Gives fiscal information
     elif 'fiscal' in command or 'entité' in command:
         talk(documentation_fiscal_entities_france())
         print("L'api va donner un cours de SES")
+
 
     # Plays a video on youtube
     elif 'joue ' in command:
@@ -175,7 +238,7 @@ def run_jacqueline():
         print('commande fact')
         if 'axolot' in command:
             talk(axolot_fact())
-        elif 'animé' in command: # Issue -> What if the user gives a name
+        elif 'animé' in command: # Not entirely taken care of
             talk(anime_fact())
         elif 'chuck' in command:  # donne un fact
             print('commande chuck norris fact')
@@ -185,7 +248,7 @@ def run_jacqueline():
             talk(random.choice([axolot_fact(), chuck_fact()]))
 
     # Tells a quote
-    elif 'citation' in command or 'cite' in command: # Issue -> What if the user gives a name
+    elif 'citation' in command or 'cite' in command: # Not entirely taken care of
         command = command.replace('citation ', '')
         command = command.replace('cite ', '')
         if 'animé' in command:
