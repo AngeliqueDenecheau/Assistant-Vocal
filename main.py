@@ -75,19 +75,27 @@ def removeTag(sentence, tags):
     :return: A list of words
     '''
 
-    cut = ""
+    action = ""
+    complement = ""
 
     if len(sentence) > 1:
         if isinstance(sentence, tuple):
             if sentence[1] in tags:
-                cut += sentence[0] + " "
+                if sentence[1] == "VERB":
+                    action += sentence[0] + " "
+                else:
+                    complement += sentence[0] + " "
         else:
             for i in range(len(sentence)):
-                cut += removeTag(sentence[i], tags)
+                cutAction, cutComplement = removeTag(sentence[i], tags)
+                action += cutAction
+                complement += cutComplement
     else:
-        cut += removeTag(sentence[0], tags)
+        cutAction, cutComplement = removeTag(sentence[0], tags)
+        action += cutAction
+        complement += cutComplement
 
-    return cut
+    return (action, complement)
 
 def getSynonyms(word):
     '''
@@ -129,7 +137,7 @@ def talk(text, langueDest = "fr"):
 
 def take_command():
     '''
-    Wait for the user to talk and tokenize his sentence
+    Wait for the user to talk
 
     :return: The user's command
     '''
@@ -157,109 +165,21 @@ def run_jacqueline():
     :return: Nothing
     '''
 
-    # No command
     command = take_command()
+
+    action, complement = langageProcessing(command)
+
+    print(action, complement)
+
     if command == None:
         return
 
-    #action, complement = langageProcessing(command)
-
-    # Gives fiscal information
-    elif 'fiscal' in command or 'entité' in command:
-        talk(documentation_fiscal_entities_france())
-        print("L'api va donner un cours de SES")
-
-
-    # Plays a video on youtube
-    elif 'joue ' in command:
-        print('commande jouer')
-        song = command.replace('joue ', '')
-        talk(song + ' en cours de lecture')
-        pywhatkit.playonyt(song)
-
-    # Tells the time
-    elif 'heure' in command:
-        print('commande heure')
-        time = datetime.datetime.now().strftime('%H:%M')
-        talk('il est actuellement ' + time)
-
-    # Gives French holiday
-    elif 'ferié ' in command:
-        talk(jours_feries())
-        print('commande jour ferié')
-
-    # Looks up somebody on wikipedia
-    elif 'qui est' in command:
-        print('commande qui est')
-        person = command.replace('qui est ', '')
-        info = wikipedia.summary(person, 1)
-        talk(info)
-
-    # Tells a joke
-    elif 'blague' in command:
-        print('commande blague')
-        talk(pyjokes.get_joke())
-
-    # Launch an app
-    elif 'ouvre' in command or 'lance' in command:
-        print('commande ouvre/lance')
-        software = command.replace('ouvre ', '')
-        software = command.replace('lance ', '')
-        try:
-            subprocess.Popen('/usr/bin/' + software)
-            talk('Ouverture de ' + software)
-        except FileNotFoundError:
-            talk(software + ' n\'est pas installé sur cet ordinateur')
-
-    # Make a Google search
-    elif 'recherche' in command:
-        print('commande recherche')
-        command = command.replace('recherche ', '')
-
-        navigator = default_navigator
-        if 'dans' in command:
-            navigator = get_navigator(command)
-            command = command.replace('dans ', '')
-            if navigator != None:
-                command = command.replace(navigator, '')
-            else:
-                return
-
-        internet_research(command, navigator)
-
-    # Shutdown Jacqueline
-    elif 'dormir' in command:  # Stop Jacqueline
-        talk("Bonne nuit")
-        exit()
-
-    # Tells a fact
-    elif 'fact' in command:
-        command = command.replace('fact ', '')
-        print('commande fact')
-        if 'axolot' in command:
-            talk(axolot_fact())
-        elif 'animé' in command: # Not entirely taken care of
-            talk(anime_fact())
-        elif 'chuck' in command:  # donne un fact
-            print('commande chuck norris fact')
-            talk(chuck_fact())
-        else:
-            print("random fact")
-            talk(random.choice([axolot_fact(), chuck_fact()]))
-
-    # Tells a quote
-    elif 'citation' in command or 'cite' in command: # Not entirely taken care of
-        command = command.replace('citation ', '')
-        command = command.replace('cite ', '')
-        if 'animé' in command:
-            command = command.replace('animé ', '')
-            print('commande citation')
-            talk(anime_quote())
-
-    # Doesn't understand
+    if action != "":
+        print("test")
+        doAction(action, complement)
     else:
-        print('commande introuvable')
-        talk('je n\'ai pas compris')
+        print("hmm")
+        getInformation(complement)
 
 
 def get_navigator(command):
@@ -308,6 +228,122 @@ def internet_research(text, navigator):
     else:
         talk('Votre système d\'exploitation n\'est pas reconnu')
     """
+
+
+def doAction(action, command):
+    '''
+    Jacqueline does an action
+
+    :param action: The action Jacqueline has to do
+    :param command: The command Jacqueline has to do
+    '''
+    # Plays a video on youtube
+    if 'joue' in action:
+        print('commande jouer')
+        # song = command.replace('joue ', '')
+        song = command
+        talk(song + ' en cours de lecture')
+        pywhatkit.playonyt(song)
+
+    # Launch an app
+    elif 'ouvre' in action or 'lance' in action:
+        print('commande ouvre/lance')
+        # software = command.replace('ouvre ', '')
+        # software = command.replace('lance ', '')
+        try:
+            subprocess.Popen('/usr/bin/' + command)
+            talk('Ouverture de ' + command)
+        except FileNotFoundError:
+            talk(command + ' n\'est pas installé sur cet ordinateur')
+
+    # Make a Google search
+    elif 'recherche' in action:
+        print('commande recherche')
+        command = command.replace('recherche ', '')
+
+        navigator = default_navigator
+        if command != "":
+            navigator = get_navigator(command)
+            # command = command.replace('dans ', '')
+            if navigator != None:
+                command = command.replace(navigator, '')
+            else:
+                return
+
+        internet_research(command, navigator)
+
+    # Tells a quote
+    elif 'citation' in command or 'cite' in action:  # Not entirely taken care of
+        command = command.replace('citation ', '')
+        # action = action.replace('cite ', '')
+        if 'animé' in command:
+            command = command.replace('animé ', '')
+            print('commande citation')
+            talk(anime_quote())
+
+    # Shutdown Jacqueline
+    elif 'dormir' in action:  # Stop Jacqueline
+        talk("Bonne nuit")
+        exit()
+
+    # Doesn't understand
+    else:
+        getInformation(command)
+
+def getInformation(command):
+    '''
+    Jaqueline get information
+    
+    :param command: The command Jacqueline has to do
+    '''
+
+    # Gives fiscal information
+    if 'fiscal' in command or 'entité' in command:
+        talk(documentation_fiscal_entities_france())
+        print("L'api va donner un cours de SES")
+
+    # Tells the time
+    elif 'heure' in command:
+        print('commande heure')
+        time = datetime.datetime.now().strftime('%H:%M')
+        talk('il est actuellement ' + time)
+
+    # Gives French holiday
+    elif 'ferié ' in command:
+        talk(jours_feries())
+        print('commande jour ferié')
+
+    # Looks up somebody on wikipedia
+    elif 'qui est' in command:
+        print('commande qui est')
+        person = command.replace('qui est ', '')
+        info = wikipedia.summary(person, 1)
+        talk(info)
+
+    # Tells a joke
+    elif 'blague' in command:
+        print('commande blague')
+        talk(pyjokes.get_joke())
+
+    # Tells a fact
+    elif 'fact' in command:
+        complement = command.replace('fact ', '')
+        print('commande fact')
+        if 'axolot' in complement:
+            talk(axolot_fact())
+        elif 'animé' in complement:  # Not entirely taken care of
+            talk(anime_fact())
+        elif 'chuck' in complement:  # donne un fact
+            print('commande chuck norris fact')
+            talk(chuck_fact())
+        else:
+            print("random fact")
+            talk(random.choice([axolot_fact(), chuck_fact()]))
+
+    # Doesn't understand
+    else:
+        print('commande introuvable')
+        talk('je n\'ai pas compris')
 
 # Jacqueline loop
 while True:
