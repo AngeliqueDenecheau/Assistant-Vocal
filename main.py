@@ -52,7 +52,7 @@ def langageProcessing(sentence):
     '''
 
     pos_tagger = StanfordPOSTagger(model, jar, encoding='utf8' )
-    res = pos_tagger.tag(sentence.split())
+    res = pos_tagger.tag(TreebankWordTokenizer().tokenize(sentence))
 
     grammar = "NP: {<DET>?<ADJ>?<NOUN><ADJ>?|<DET>?<ADJ>?<PROPN><ADJ?>|<ADJ>|<NOUN>|<PROPN>|<ADP>|<DET>|<NUM>} \n PP: {<NP>*} \n VP : {<PRON>?<VERB><PRON>?|<PRON>?<AUX><PRON>?}"
     parser = RegexpParser(grammar)
@@ -99,7 +99,7 @@ def removeTag(sentence, tags):
 
 def getSynonyms(word):
     '''
-    Get synonyms of a word
+    Get synonyms of a word (Not used, synonyms are far too broad to be usefull unfortunately)
 
     :param word: The word to get a synonym of
     :return: The synonyms
