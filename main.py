@@ -7,7 +7,6 @@ import datetime
 import wikipedia
 import pyjokes
 import webbrowser
-import sys
 import subprocess
 import random
 
@@ -23,7 +22,6 @@ from deep_translator import GoogleTranslator
 from nltk.corpus import wordnet as wn
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.wsd import lesk
-from nltk import pos_tag, word_tokenize
 from nltk.tag import StanfordPOSTagger
 from nltk.chunk.regexp import *
 import os
@@ -61,6 +59,8 @@ def langageProcessing(sentence):
     # Keep NOUN / VERB / PROPN / ADJ / NUM /
     cut = ""
     tags = ("NOUN", "PROPN", "ADJ", "NUM", "VERB")
+
+    print(parsed)
 
     cut = removeTag(parsed, tags)
 
@@ -169,16 +169,15 @@ def run_jacqueline():
 
     action, complement = langageProcessing(command)
 
+    print(action)
     print(action, complement)
 
     if command == None:
         return
 
     if action != "":
-        print("test")
         doAction(action, complement)
     else:
-        print("hmm")
         getInformation(complement)
 
 
@@ -246,10 +245,10 @@ def doAction(action, command):
         pywhatkit.playonyt(song)
 
     # Launch an app
-    elif 'ouvre' in action or 'lance' in action:
+    elif 'ouvre' in action or 'lance' in action or 'lance' in command:
         print('commande ouvre/lance')
         # software = command.replace('ouvre ', '')
-        # software = command.replace('lance ', '')
+        software = command.replace('lance ', '')
         try:
             subprocess.Popen('/usr/bin/' + command)
             talk('Ouverture de ' + command)
@@ -257,7 +256,7 @@ def doAction(action, command):
             talk(command + ' n\'est pas installé sur cet ordinateur')
 
     # Make a Google search
-    elif 'recherche' in action:
+    elif 'recherche' in action or 'recherche' in command:
         print('commande recherche')
         command = command.replace('recherche ', '')
 
